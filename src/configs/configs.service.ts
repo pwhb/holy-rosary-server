@@ -11,7 +11,7 @@ import { CacheService } from 'src/core/cache/cache.service';
 @Injectable()
 export class ConfigsService {
   constructor(
-    @InjectModel(Config.name) private configModel: Model<Config>,
+    @InjectModel(Config.name) private readonly configModel: Model<Config>,
     private readonly cacheService: CacheService,
   ) {}
   async get(code: string, visibility = VisibilityType.PUBLIC): Promise<any> {

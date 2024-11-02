@@ -1,42 +1,67 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { RegisterAuthDto } from './dto/register-auth.dto';
+import { UsersService } from 'src/users/users.service';
+import STRINGS from 'src/common/consts/strings.json';
+import { Request } from 'express';
+import { JwtAuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@Req() req: Request) {
+    console.log(req);
+
+    return {
+      message: STRINGS.RESPONSES.SUCCESS,
+      data: req['user'],
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('telegram/login')
+  telegramLogin(@Body() dto: CreateAuthDto) {
+    // return this.authService.create(dto);
+    return null;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Post('login')
+  async login(@Body() dto: LoginAuthDto) {
+    const user = await this.authService.validateUser({
+      username: dto.username,
+      password: dto.password,
+      client: 'web',
+    });
+    const data = await this.authService.login(user._id.toString());
+    return {
+      message: STRINGS.RESPONSES.SUCCESS,
+      data,
+    };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
-  }
+  @Post('register')
+  async register(@Body() dto: RegisterAuthDto) {
+    const user = await this.usersService.create({
+      username: dto.username,
+      client: 'web',
+      deviceId: dto.deviceId,
+    });
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+    await this.authService.create({
+      userId: user._id,
+      password: dto.password,
+      client: 'web',
+    });
+
+    return {
+      message: STRINGS.RESPONSES.SUCCESS,
+    };
   }
 }

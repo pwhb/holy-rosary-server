@@ -13,6 +13,10 @@ import { CacheService } from './core/cache/cache.service';
 import { session } from 'telegraf';
 import { BotService } from './telegram/bot/bot.service';
 import { TemplatesService } from './core/templates/templates.service';
+import { TokensService } from './auth/tokens/tokens.service';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/auth.guard';
+import { WebhooksController } from './webhooks/webhooks.controller';
 
 @Module({
   imports: [
@@ -50,6 +54,12 @@ import { TemplatesService } from './core/templates/templates.service';
     ConfigsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CacheService, BotService, TemplatesService],
+  providers: [
+    AppService,
+    CacheService,
+    BotService,
+    TemplatesService,
+    TokensService,
+  ],
 })
 export class AppModule {}

@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigsService } from './configs.service';
 import { CreateConfigDto } from './dto/create-config.dto';
@@ -18,6 +19,7 @@ import STRINGS from 'src/common/consts/strings.json';
 import { Response } from 'express';
 import { parseQuery, QueryType } from 'src/common/db/query';
 import { VisibilityType } from './configs.schema';
+import { JwtAuthGuard, Public } from 'src/auth/auth.guard';
 @ApiTags('configs')
 @Controller('api/v1/configs')
 export class ConfigsController {
@@ -67,6 +69,7 @@ export class ConfigsController {
     });
   }
 
+  @Public()
   @Get('getConfigByCode/:code')
   async getConfigByCode(@Param('code') code: string, @Res() res: Response) {
     const data = await this.configsService.get(code);

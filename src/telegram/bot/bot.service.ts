@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Ctx, Start, Update } from 'nestjs-telegraf';
 import { VisibilityType } from 'src/configs/configs.schema';
 import { ConfigsService } from 'src/configs/configs.service';

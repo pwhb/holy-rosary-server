@@ -7,16 +7,16 @@ import { TemplatesService } from './core/templates/templates.service';
 @Injectable()
 export class AppService {
   constructor(
-    private configService: ConfigService,
-    private configsService: ConfigsService,
-    private templatesService: TemplatesService,
+    private readonly configService: ConfigService,
+    private readonly configsService: ConfigsService,
+    private readonly templatesService: TemplatesService,
   ) {}
   getHello(): object {
     const env = this.configService.get('NODE_ENV')
       ? `${this.configService.get('NODE_ENV')}`
       : 'unknown';
     return {
-      name: `diogenes backend`,
+      name: `rosary backend`,
       env,
       version: this.configService.get('VERSION'),
     };

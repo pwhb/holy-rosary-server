@@ -1,26 +1,69 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import bcrypt from 'bcrypt';
+import { UsersService } from 'src/users/users.service';
+import { TokensService } from './tokens/tokens.service';
+import { Auth } from './auth.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { FilterQuery, Model, ObjectId } from 'mongoose';
+import { JwtService } from '@nestjs/jwt';
+import STRINGS from 'src/common/consts/strings.json';
+import { User } from 'src/users/users.schema';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
+    private readonly usersService: UsersService,
+    private readonly tokensService: TokensService,
+    private readonly jwtService: JwtService,
+  ) {}
+  hash(string: string) {
+    return bcrypt.hashSync(string, 10);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  compare(string: string, hash: string) {
+    return bcrypt.compareSync(string, hash);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async validateUser({
+    username,
+    password,
+    client,
+  }: {
+    username: string;
+    password: string;
+    client: string;
+  }) {
+    const user = await this.usersService.findOneByFilter({
+      username: username,
+      client: client,
+    });
+    if (!user) throw Error(STRINGS.RESPONSES.USER_NOT_FOUND);
+    const auth = await this.findOneByFilter({
+      userId: user._id,
+    });
+    if (!auth) throw Error(STRINGS.RESPONSES.USER_NOT_FOUND);
+    const isValid = this.compare(password, auth.password);
+    if (!isValid) throw Error(STRINGS.RESPONSES.INVALID_PASSWORD);
+    return user;
   }
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
+  async login(userId: string) {
+    return {
+      access_token: this.jwtService.sign({
+        userId: userId,
+      }),
+    };
+  }
+  create(dto: Auth) {
+    return this.authModel.create({
+      userId: dto.userId,
+      password: this.hash(dto.password),
+      client: dto.client,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  findOneByFilter(filter: FilterQuery<Auth>) {
+    return this.authModel.findOne(filter).lean();
   }
 }
