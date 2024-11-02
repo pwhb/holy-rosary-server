@@ -9,6 +9,12 @@ export enum ConfigType {
   NUMBER = 'NUMBER',
 }
 
+export enum VisibilityType {
+  PUBLIC = 'PUBLIC',
+  PRIVATE = 'PRIVATE',
+  ANY = 'ANY',
+}
+
 export type TConfig = {
   code: string;
   name: string;
@@ -25,8 +31,11 @@ export class Config extends Base {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ default: 'STRING' })
+  @Prop({ default: ConfigType.STRING })
   type: ConfigType;
+
+  @Prop({ default: VisibilityType.PRIVATE })
+  visibility: string;
 
   @Prop({ type: {}, default: '' })
   value: any;

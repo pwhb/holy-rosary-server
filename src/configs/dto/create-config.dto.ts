@@ -19,6 +19,10 @@ export class CreateConfigDto {
   @IsOptional()
   value: any;
 
+  @ApiProperty({ required: false })
+  @IsOptional()
+  visibility: string;
+
   @ApiProperty({ default: [] })
   @IsArray()
   subConfigs: TConfig[];

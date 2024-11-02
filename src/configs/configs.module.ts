@@ -11,5 +11,6 @@ import { CacheService } from 'src/core/cache/cache.service';
   ],
   controllers: [ConfigsController],
   providers: [ConfigsService, CacheService],
+  exports: [ConfigsService],
 })
-export class ConfigsModule { }
+export class ConfigsModule {}

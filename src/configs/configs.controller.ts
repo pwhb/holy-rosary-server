@@ -17,6 +17,7 @@ import { QueryConfigDto } from './dto/query-config.dto';
 import STRINGS from 'src/common/consts/strings.json';
 import { Response } from 'express';
 import { parseQuery, QueryType } from 'src/common/db/query';
+import { VisibilityType } from './configs.schema';
 @ApiTags('configs')
 @Controller('api/v1/configs')
 export class ConfigsController {
@@ -58,6 +59,17 @@ export class ConfigsController {
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
     const data = await this.configsService.findOne(id);
+    if (!data)
+      return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
+    return res.status(200).json({
+      message: STRINGS.RESPONSES.SUCCESS,
+      data,
+    });
+  }
+
+  @Get('getConfigByCode/:code')
+  async getConfigByCode(@Param('code') code: string, @Res() res: Response) {
+    const data = await this.configsService.get(code);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({

@@ -3,19 +3,21 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { GenericExceptionFilter, validationExceptionHandler } from './common/exceptions/handlers';
+import {
+  GenericExceptionFilter,
+  validationExceptionHandler,
+} from './common/exceptions/handlers';
 import { DevInterceptor } from './common/exceptions/interceptors';
 import { getBotToken } from 'nestjs-telegraf';
 
-async function bootstrap()
-{
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-
-
   app.enableCors({
-    origin: configService.get('CORS_ORIGIN') ? configService.get('CORS_ORIGIN').split(",") : [],
+    origin: configService.get('CORS_ORIGIN')
+      ? configService.get('CORS_ORIGIN').split(',')
+      : [],
   });
 
   const config = new DocumentBuilder()
@@ -35,13 +37,12 @@ async function bootstrap()
     }),
   );
   app.useGlobalFilters(new GenericExceptionFilter());
-  if (configService.get('NODE_ENV') === 'DEV')
-  {
+  if (configService.get('NODE_ENV') === 'DEV') {
     app.useGlobalInterceptors(new DevInterceptor());
   }
 
-  const bot = app.get(getBotToken())
-  app.use(bot.webhookCallback(configService.get('TELEGRAM_WEBHOOK_PATH')))
+  const bot = app.get(getBotToken());
+  app.use(bot.webhookCallback(configService.get('TELEGRAM_WEBHOOK_PATH')));
 
   await app.listen(configService.get('PORT') ?? 3000);
 }

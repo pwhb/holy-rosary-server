@@ -12,12 +12,13 @@ import { ConfigsModule } from './configs/configs.module';
 import { CacheService } from './core/cache/cache.service';
 import { session } from 'telegraf';
 import { BotService } from './telegram/bot/bot.service';
+import { TemplatesService } from './core/templates/templates.service';
 
 @Module({
   imports: [
     CacheModule.register({
       ttl: 60,
-      isGlobal: true
+      isGlobal: true,
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -39,7 +40,7 @@ import { BotService } from './telegram/bot/bot.service';
             path: configService.get('TELEGRAM_WEBHOOK_PATH')!,
           },
         },
-        middlewares: [session()]
+        middlewares: [session()],
       }),
       inject: [ConfigService],
     }),
@@ -49,6 +50,6 @@ import { BotService } from './telegram/bot/bot.service';
     ConfigsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CacheService, BotService],
+  providers: [AppService, CacheService, BotService, TemplatesService],
 })
-export class AppModule { }
+export class AppModule {}
