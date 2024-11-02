@@ -17,7 +17,7 @@ export class BotService {
   async start(@Ctx() ctx: Context) {
     const config = await this.configsService.get(
       'TELEGRAM_BOT',
-      VisibilityType.ANY,
+      VisibilityType.PRIVATE,
     );
     const template = config.subConfigs.RESPONSES.START;
     const response = this.templatesService.parseTemplate(

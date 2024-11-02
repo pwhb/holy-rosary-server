@@ -6,7 +6,7 @@ import { RegisterAuthDto } from './dto/register-auth.dto';
 import { UsersService } from 'src/users/users.service';
 import STRINGS from 'src/common/consts/strings.json';
 import { Request } from 'express';
-import { JwtAuthGuard } from './auth.guard';
+import { BasicAuthGuard, JwtAuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -32,12 +32,13 @@ export class AuthController {
     return null;
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post('login')
-  async login(@Body() dto: LoginAuthDto) {
+  async login(@Body() dto: LoginAuthDto, @Req() req: Request) {
     const user = await this.authService.validateUser({
       username: dto.username,
       password: dto.password,
-      client: 'web',
+      client: req['user'] as string,
     });
     const data = await this.authService.login(user._id.toString());
     return {
@@ -46,18 +47,21 @@ export class AuthController {
     };
   }
 
+  @UseGuards(BasicAuthGuard)
   @Post('register')
-  async register(@Body() dto: RegisterAuthDto) {
+  async register(@Body() dto: RegisterAuthDto, @Req() req: Request) {
+    console.log(req['user']);
+
     const user = await this.usersService.create({
       username: dto.username,
-      client: 'web',
+      client: req['user'] as string,
       deviceId: dto.deviceId,
     });
 
     await this.authService.create({
       userId: user._id,
       password: dto.password,
-      client: 'web',
+      client: req['user'] as string,
     });
 
     return {

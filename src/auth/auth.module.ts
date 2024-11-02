@@ -8,6 +8,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
+import { BasicStrategy } from './basic.strategy';
+import { ConfigsModule } from 'src/configs/configs.module';
 
 @Module({
   imports: [
@@ -21,8 +23,9 @@ import { JwtStrategy } from './jwt.strategy';
       }),
       inject: [ConfigService],
     }),
+    ConfigsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokensService, JwtStrategy],
+  providers: [AuthService, TokensService, JwtStrategy, BasicStrategy],
 })
 export class AuthModule {}

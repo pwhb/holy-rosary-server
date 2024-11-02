@@ -1,5 +1,4 @@
 import {
-  createParamDecorator,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
@@ -26,7 +25,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     if (isPublic) {
       return true;
     }
-
     return super.canActivate(context);
   }
 
@@ -42,9 +40,20 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 }
 
-// export const CurrentUser = createParamDecorator(
-//   (data: unknown, context: ExecutionContext) => {
-//     const request = context.switchToHttp().getRequest()
-//     return request['user']
-//   },
-// );
+@Injectable()
+export class BasicAuthGuard extends AuthGuard('basic') {
+  constructor(private reflector: Reflector) {
+    super();
+  }
+  canActivate(context: ExecutionContext) {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) {
+      return true;
+    }
+
+    return super.canActivate(context);
+  }
+}
