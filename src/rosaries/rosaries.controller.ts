@@ -1,18 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { RosariesService } from './rosaries.service';
-import { CreateRosaryDto } from './dto/create-rosary.dto';
-import { UpdateRosaryDto } from './dto/update-rosary.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
+import { Request } from 'express';
+import { CreatePrayerDto } from './dto/create-prayer-dto';
+import STRINGS from 'src/common/consts/strings.json';
+import { UpdatePrayerDto } from './dto/update-prayer-dto';
 @ApiBearerAuth()
 @ApiTags('rosaries')
 @Controller('api/v1/rosaries')
@@ -20,28 +13,60 @@ import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
 export class RosariesController {
   constructor(private readonly rosariesService: RosariesService) {}
 
-  @Post()
-  create(@Body() createRosaryDto: CreateRosaryDto) {
-    return this.rosariesService.create(createRosaryDto);
+  @Post('today')
+  async getTodayInfo(@Req() req: Request & { user: any }) {
+    const data = await this.rosariesService.getTodayInfo(req['user']['_id']!);
+    return {
+      ok: true,
+      data,
+    };
   }
 
-  @Get()
-  findAll() {
-    return this.rosariesService.findAll();
+  @Post('new-prayer')
+  async createNewPrayer(
+    @Req() req: Request & { user: any },
+    @Body() dto: CreatePrayerDto,
+  ) {
+    const data = await this.rosariesService.createNewPrayer(
+      dto,
+      req['user']['_id']!,
+    );
+    if (!data) throw Error(STRINGS.RESPONSES.NOT_FOUND);
+    return {
+      ok: true,
+      data,
+    };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.rosariesService.findOne(+id);
+  @Post('update-prayer')
+  async updatePrayer(
+    @Req() req: Request & { user: any },
+    @Body() dto: UpdatePrayerDto,
+  ) {
+    const data = await this.rosariesService.updatePrayer(
+      dto,
+      req['user']['_id']!,
+    );
+    if (!data) throw Error(STRINGS.RESPONSES.NOT_FOUND);
+    return {
+      ok: true,
+      data,
+    };
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRosaryDto: UpdateRosaryDto) {
-    return this.rosariesService.update(+id, updateRosaryDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.rosariesService.remove(+id);
+  @Post('reset-prayer')
+  async resetPrayer(
+    @Req() req: Request & { user: any },
+    @Body() dto: UpdatePrayerDto,
+  ) {
+    const data = await this.rosariesService.updatePrayer(
+      dto,
+      req['user']['_id']!,
+    );
+    if (!data) throw Error(STRINGS.RESPONSES.NOT_FOUND);
+    return {
+      ok: true,
+      data,
+    };
   }
 }
