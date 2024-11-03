@@ -29,7 +29,7 @@ export class MenusController {
   async create(@Body() dto: CreateMenuDto, @Res() res: Response) {
     const data = await this.menusService.create(dto);
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -51,7 +51,7 @@ export class MenusController {
       sort,
     });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       page,
       size: limit,
       count,
@@ -65,7 +65,7 @@ export class MenusController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -80,7 +80,7 @@ export class MenusController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -91,7 +91,7 @@ export class MenusController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }

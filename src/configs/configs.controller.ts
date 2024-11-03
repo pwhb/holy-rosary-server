@@ -30,7 +30,7 @@ export class ConfigsController {
   async create(@Body() dto: CreateConfigDto, @Res() res: Response) {
     const data = await this.configsService.create(dto);
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -52,7 +52,7 @@ export class ConfigsController {
       sort,
     });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       page,
       size: limit,
       count,
@@ -66,7 +66,7 @@ export class ConfigsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -78,7 +78,7 @@ export class ConfigsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -93,7 +93,7 @@ export class ConfigsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -104,7 +104,7 @@ export class ConfigsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -113,7 +113,7 @@ export class ConfigsController {
   async resetCache(@Res() res: Response) {
     await this.configsService.resetCache();
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
     });
   }
 }

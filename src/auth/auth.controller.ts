@@ -29,7 +29,7 @@ export class AuthController {
     });
     const data = await this.authService.login(user._id.toString());
     return {
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     };
   }
@@ -55,7 +55,7 @@ export class AuthController {
     });
 
     return {
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
     };
   }
 }

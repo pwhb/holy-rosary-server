@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
 import STRINGS from 'src/common/consts/strings.json';
@@ -18,7 +18,7 @@ export class UsersController {
     delete me.role;
     delete me.roleId;
     return {
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data: me,
     };
   }
@@ -28,10 +28,10 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findOneById(id);
+  }
 
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {

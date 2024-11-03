@@ -31,7 +31,7 @@ export class RolesController {
   async create(@Body() createRoleDto: CreateRoleDto, @Res() res: Response) {
     const data = await this.rolesService.create(createRoleDto);
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -53,7 +53,7 @@ export class RolesController {
       sort,
     });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       page,
       size: limit,
       count,
@@ -67,7 +67,7 @@ export class RolesController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -82,7 +82,7 @@ export class RolesController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -93,7 +93,7 @@ export class RolesController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }

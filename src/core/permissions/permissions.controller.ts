@@ -36,7 +36,7 @@ export class PermissionsController {
     // dto['createdBy'] = req['user']['_id'];
     const data = await this.permissionsService.create(dto);
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -58,7 +58,7 @@ export class PermissionsController {
       sort,
     });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       page,
       size: limit,
       count,
@@ -72,7 +72,7 @@ export class PermissionsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -89,7 +89,7 @@ export class PermissionsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
@@ -100,7 +100,7 @@ export class PermissionsController {
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
+      ok: true,
       data,
     });
   }
