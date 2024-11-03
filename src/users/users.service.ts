@@ -5,6 +5,7 @@ import { CacheService } from 'src/core/cache/cache.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import STRINGS from 'src/common/consts/strings.json';
+import { permission } from 'process';
 
 @Injectable()
 export class UsersService {
@@ -28,7 +29,34 @@ export class UsersService {
 
   findOneById(id: string) {
     return this.cacheService.get(`USERS:${id}`, () =>
-      this.userModel.findById(id).lean(),
+      this.userModel
+        .findById(id)
+        .populate('role', {
+          _id: 0,
+          name: 1,
+        })
+        .select({
+          deviceId: 0,
+          updatedAt: 0,
+        })
+        .lean(),
+    );
+  }
+
+  findOneByIdForAuth(id: string) {
+    return this.cacheService.get(`USERS:${id}`, () =>
+      this.userModel
+        .findById(id)
+        .populate('role', {
+          _id: 0,
+          name: 1,
+          permissionIds: 1,
+        })
+        .select({
+          deviceId: 0,
+          updatedAt: 0,
+        })
+        .lean(),
     );
   }
 

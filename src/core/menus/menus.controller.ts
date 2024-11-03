@@ -6,29 +6,28 @@ import {
   Patch,
   Param,
   Delete,
-  Query,
   Res,
+  Query,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigsService } from './configs.service';
-import { CreateConfigDto } from './dto/create-config.dto';
-import { UpdateConfigDto } from './dto/update-config.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { QueryConfigDto } from './dto/query-config.dto';
+import { MenusService } from './menus.service';
+import { CreateMenuDto } from './dto/create-menu.dto';
+import { UpdateMenuDto } from './dto/update-menu.dto';
 import STRINGS from 'src/common/consts/strings.json';
-import { Response } from 'express';
 import { parseQuery, QueryType } from 'src/common/db/query';
-import { JwtAuthGuard, Public, RoleGuard } from 'src/auth/auth.guard';
-
+import { Response } from 'express';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
 @ApiBearerAuth()
-@ApiTags('configs')
+@ApiTags('menus')
+@Controller('api/v1/menus')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Controller('api/v1/configs')
-export class ConfigsController {
-  constructor(private readonly configsService: ConfigsService) {}
+export class MenusController {
+  constructor(private readonly menusService: MenusService) {}
+
   @Post()
-  async create(@Body() dto: CreateConfigDto, @Res() res: Response) {
-    const data = await this.configsService.create(dto);
+  async create(@Body() dto: CreateMenuDto, @Res() res: Response) {
+    const data = await this.menusService.create(dto);
     return res.status(200).json({
       message: STRINGS.RESPONSES.SUCCESS,
       data,
@@ -36,7 +35,7 @@ export class ConfigsController {
   }
 
   @Get()
-  async findMany(@Query() query: QueryConfigDto, @Res() res: Response) {
+  async findMany(@Query() query: any, @Res() res: Response) {
     const { skip, limit, page, sort, filter } = parseQuery(query, [
       {
         key: 'q',
@@ -45,7 +44,7 @@ export class ConfigsController {
       },
     ]);
 
-    const { count, data } = await this.configsService.findMany({
+    const { count, data } = await this.menusService.findMany({
       filter,
       skip,
       limit,
@@ -62,19 +61,7 @@ export class ConfigsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
-    const data = await this.configsService.findOne(id);
-    if (!data)
-      return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
-    return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
-      data,
-    });
-  }
-
-  @Public()
-  @Get('getConfigByCode/:code')
-  async getConfigByCode(@Param('code') code: string, @Res() res: Response) {
-    const data = await this.configsService.get(code);
+    const data = await this.menusService.findOne(id);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
@@ -86,10 +73,10 @@ export class ConfigsController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() dto: UpdateConfigDto,
+    @Body() dto: UpdateMenuDto,
     @Res() res: Response,
   ) {
-    const data = await this.configsService.update(id, dto);
+    const data = await this.menusService.update(id, dto);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
@@ -100,20 +87,12 @@ export class ConfigsController {
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response) {
-    const data = await this.configsService.remove(id);
+    const data = await this.menusService.remove(id);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
       message: STRINGS.RESPONSES.SUCCESS,
       data,
-    });
-  }
-
-  @Post('resetCache')
-  async resetCache(@Res() res: Response) {
-    await this.configsService.resetCache();
-    return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
     });
   }
 }

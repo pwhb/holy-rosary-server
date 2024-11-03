@@ -10,10 +10,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { BasicStrategy } from './basic.strategy';
 import { ConfigsModule } from 'src/configs/configs.module';
+import { PermissionsModule } from 'src/core/permissions/permissions.module';
 
 @Module({
   imports: [
     UsersModule,
+    PermissionsModule,
     MongooseModule.forFeature([{ name: Auth.name, schema: AuthSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -6,12 +6,17 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { RosariesService } from './rosaries.service';
 import { CreateRosaryDto } from './dto/create-rosary.dto';
 import { UpdateRosaryDto } from './dto/update-rosary.dto';
-
-@Controller('rosaries')
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
+@ApiBearerAuth()
+@ApiTags('rosaries')
+@Controller('api/v1/rosaries')
+@UseGuards(JwtAuthGuard, RoleGuard)
 export class RosariesController {
   constructor(private readonly rosariesService: RosariesService) {}
 

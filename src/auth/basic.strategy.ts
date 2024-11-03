@@ -15,12 +15,6 @@ export class BasicStrategy extends PassportStrategy(Strategy) {
       'CLIENT',
       VisibilityType.PRIVATE,
     );
-    console.log({
-      username,
-      password,
-      'CLIENT.subConfigs.AUTH': CLIENT.subConfigs.AUTH,
-      'CLIENT.subConfigs.AUTH[username]': CLIENT.subConfigs.AUTH[username],
-    });
 
     if (
       CLIENT.subConfigs.AUTH &&

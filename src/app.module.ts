@@ -14,9 +14,9 @@ import { session } from 'telegraf';
 import { BotService } from './telegram/bot/bot.service';
 import { TemplatesService } from './core/templates/templates.service';
 import { TokensService } from './auth/tokens/tokens.service';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/auth.guard';
-import { WebhooksController } from './webhooks/webhooks.controller';
+import { RolesModule } from './core/roles/roles.module';
+import { PermissionsModule } from './core/permissions/permissions.module';
+import { MenusModule } from './core/menus/menus.module';
 
 @Module({
   imports: [
@@ -52,6 +52,9 @@ import { WebhooksController } from './webhooks/webhooks.controller';
     RosariesModule,
     UsersModule,
     ConfigsModule,
+    RolesModule,
+    PermissionsModule,
+    MenusModule,
   ],
   controllers: [AppController],
   providers: [

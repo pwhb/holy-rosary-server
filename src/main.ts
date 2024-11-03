@@ -24,7 +24,7 @@ async function bootstrap() {
     .setTitle('diogenes')
     .setDescription('')
     .setVersion(configService.get('VERSION') || '0.0.0')
-    .addTag('default')
+    .addTag('app')
     .addBasicAuth()
     .addBearerAuth()
     .build();

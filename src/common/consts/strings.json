@@ -19,8 +19,5 @@
     "USER_LOGGED_OUT": "User logged out successfully.",
     "ALREADY_ADDED": "Already added.",
     "SAME_USER": "Same user."
-  },
-  "AUTH_VALIDATION_FAILED_PASSWORD_PATH_PASSWORD_IS_REQUIRED": "Auth validation failed: password: Path `password` is required.",
-  "CONVERTING_CIRCULAR_STRUCTURE_TO_JSON__STARTING_AT_OBJECT_WITH_CONSTRUCTOR_SOCKET__PROPERTY_PARSER__OBJECT_WITH_CONSTRUCTOR_HTTPPARSER__PROPERTY_SOCKET_CLOSES_THE_CIRCLE": "Converting circular structure to JSON\n    --> starting at object with constructor 'Socket'\n    |     property 'parser' -> object with constructor 'HTTPParser'\n    --- property 'socket' closes the circle",
-  "CANNOT_READ_PROPERTIES_OF_UNDEFINED_READING_AUTHORIZATION": "Cannot read properties of undefined (reading 'authorization')"
+  }
 }

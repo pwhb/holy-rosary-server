@@ -10,25 +10,26 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigsService } from './configs.service';
-import { CreateConfigDto } from './dto/create-config.dto';
-import { UpdateConfigDto } from './dto/update-config.dto';
+import { RolesService } from './roles.service';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { QueryConfigDto } from './dto/query-config.dto';
+import { QueryRoleDto } from './dto/query-role.dto';
 import STRINGS from 'src/common/consts/strings.json';
-import { Response } from 'express';
 import { parseQuery, QueryType } from 'src/common/db/query';
-import { JwtAuthGuard, Public, RoleGuard } from 'src/auth/auth.guard';
+import { Response } from 'express';
+import { JwtAuthGuard, RoleGuard } from 'src/auth/auth.guard';
 
 @ApiBearerAuth()
-@ApiTags('configs')
+@ApiTags('roles')
 @UseGuards(JwtAuthGuard, RoleGuard)
-@Controller('api/v1/configs')
-export class ConfigsController {
-  constructor(private readonly configsService: ConfigsService) {}
+@Controller('api/v1/roles')
+export class RolesController {
+  constructor(private readonly rolesService: RolesService) {}
+
   @Post()
-  async create(@Body() dto: CreateConfigDto, @Res() res: Response) {
-    const data = await this.configsService.create(dto);
+  async create(@Body() createRoleDto: CreateRoleDto, @Res() res: Response) {
+    const data = await this.rolesService.create(createRoleDto);
     return res.status(200).json({
       message: STRINGS.RESPONSES.SUCCESS,
       data,
@@ -36,16 +37,16 @@ export class ConfigsController {
   }
 
   @Get()
-  async findMany(@Query() query: QueryConfigDto, @Res() res: Response) {
+  async findMany(@Query() query: QueryRoleDto, @Res() res: Response) {
     const { skip, limit, page, sort, filter } = parseQuery(query, [
       {
         key: 'q',
         type: QueryType.Regex,
-        searchedFields: ['name'],
+        searchedFields: [''],
       },
     ]);
 
-    const { count, data } = await this.configsService.findMany({
+    const { count, data } = await this.rolesService.findMany({
       filter,
       skip,
       limit,
@@ -62,19 +63,7 @@ export class ConfigsController {
 
   @Get(':id')
   async findOne(@Param('id') id: string, @Res() res: Response) {
-    const data = await this.configsService.findOne(id);
-    if (!data)
-      return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
-    return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
-      data,
-    });
-  }
-
-  @Public()
-  @Get('getConfigByCode/:code')
-  async getConfigByCode(@Param('code') code: string, @Res() res: Response) {
-    const data = await this.configsService.get(code);
+    const data = await this.rolesService.findOne(id);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
@@ -86,10 +75,10 @@ export class ConfigsController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() dto: UpdateConfigDto,
+    @Body() updateRoleDto: UpdateRoleDto,
     @Res() res: Response,
   ) {
-    const data = await this.configsService.update(id, dto);
+    const data = await this.rolesService.update(id, updateRoleDto);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
@@ -100,20 +89,12 @@ export class ConfigsController {
 
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response) {
-    const data = await this.configsService.remove(id);
+    const data = await this.rolesService.remove(id);
     if (!data)
       return res.status(404).json({ message: STRINGS.RESPONSES.NOT_FOUND });
     return res.status(200).json({
       message: STRINGS.RESPONSES.SUCCESS,
       data,
-    });
-  }
-
-  @Post('resetCache')
-  async resetCache(@Res() res: Response) {
-    await this.configsService.resetCache();
-    return res.status(200).json({
-      message: STRINGS.RESPONSES.SUCCESS,
     });
   }
 }
