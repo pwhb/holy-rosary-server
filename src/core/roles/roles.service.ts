@@ -4,10 +4,14 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './roles.schema';
 import { FilterQuery, Model, QueryOptions } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class RolesService {
-  constructor(@InjectModel(Role.name) private roleModel: Model<Role>) {}
+  constructor(
+    @InjectModel(Role.name) private roleModel: Model<Role>,
+    private readonly cacheService: CacheService,
+  ) {}
   async create(dto: CreateRoleDto) {
     return this.roleModel.create(dto);
   }
@@ -37,10 +41,12 @@ export class RolesService {
     return this.roleModel.findById(id).lean();
   }
 
-  update(id: string, dto: UpdateRoleDto) {
-    return this.roleModel
+  async update(id: string, dto: UpdateRoleDto) {
+    const updated = await this.roleModel
       .findByIdAndUpdate(id, dto, { returnDocument: 'after' })
       .lean();
+    await this.cacheService.reset();
+    return updated;
   }
 
   remove(id: string) {

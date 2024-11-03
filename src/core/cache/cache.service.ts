@@ -1,9 +1,10 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CacheService {
+  private readonly logger = new Logger(CacheService.name);
   constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
   async get(
     key: string,
@@ -12,13 +13,13 @@ export class CacheService {
   ): Promise<any> {
     const result = await this.cacheManager.get(key);
     if (result) {
-      console.log('FROM CACHE', key);
+      this.logger.debug('FROM CACHE', key);
       return result;
     }
     if (fallback) {
       const resultFromFallback = await fallback();
       if (resultFromFallback) {
-        console.log('FROM FALLBACK', key);
+        this.logger.debug('FROM FALLBACK', key);
         await this.cacheManager.set(key, resultFromFallback, ttl);
         return resultFromFallback;
       }

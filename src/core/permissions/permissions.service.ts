@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Permission } from './permissions.schema';
@@ -8,6 +8,7 @@ import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class PermissionsService {
+  private readonly logger = new Logger(PermissionsService.name);
   constructor(
     @InjectModel(Permission.name)
     private readonly permissionModel: Model<Permission>,
@@ -35,8 +36,6 @@ export class PermissionsService {
   }
 
   async checkPermission(query: { path: string; method: string }, role: any) {
-    console.log('CHECKING PERMISSION', query, role);
-
     let allowedRoles = ['ROOT'];
     if (allowedRoles.includes(role.name)) return true;
 
@@ -50,13 +49,19 @@ export class PermissionsService {
       if (
         allowedRoles.includes(role.name) ||
         allowedRoles.includes('PUBLIC') ||
-        role.permissionIds.includes(found._id.toString())
+        role.permissionIds.some(
+          (permissionId: any) =>
+            permissionId.toString() === found._id.toString(),
+        )
       ) {
         return true;
       }
+
+      this.logger.debug(`permissionId: ${found._id}, roleId: ${role.name}`);
       return false;
     }
-    await this.create(query);
+    const perm = await this.create(query);
+    this.logger.debug(`permissionId: ${perm._id}, roleId: ${role.name}`);
     return false;
   }
 
@@ -86,7 +91,7 @@ export class PermissionsService {
   }
 
   async update(id: string, dto: UpdatePermissionDto) {
-    await this.cacheService.del(`permission:${dto.method}:${dto.path}`);
+    await this.cacheService.del(`PERMISSIONS:${dto.method}:${dto.path}`);
     return this.permissionModel
       .findByIdAndUpdate(id, dto, { returnDocument: 'after' })
       .lean();
