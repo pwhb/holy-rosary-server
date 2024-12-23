@@ -17,6 +17,9 @@ import { TokensService } from './auth/tokens/tokens.service';
 import { RolesModule } from './core/roles/roles.module';
 import { PermissionsModule } from './core/permissions/permissions.module';
 import { MenusModule } from './core/menus/menus.module';
+import { HomeController } from './home/home.controller';
+import { MeditationsService } from './meditations/meditations.service';
+import { MeditationTemplatesModule } from './meditation-templates/meditation-templates.module';
 
 @Module({
   imports: [
@@ -55,14 +58,16 @@ import { MenusModule } from './core/menus/menus.module';
     RolesModule,
     PermissionsModule,
     MenusModule,
+    MeditationTemplatesModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HomeController],
   providers: [
     AppService,
     CacheService,
     BotService,
     TemplatesService,
     TokensService,
+    MeditationsService,
   ],
 })
 export class AppModule {}

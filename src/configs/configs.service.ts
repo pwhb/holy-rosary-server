@@ -49,8 +49,8 @@ export class ConfigsService {
     return this.cacheService.reset();
   }
 
-  async create(createConfigDto: CreateConfigDto) {
-    const data = await this.configModel.create(createConfigDto);
+  async create(dto: CreateConfigDto) {
+    const data = await this.configModel.create(dto);
     return data;
   }
 
