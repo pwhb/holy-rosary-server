@@ -8,6 +8,8 @@ import { BasicAuthGuard } from './auth.guard';
 import { ConfigsService } from 'src/configs/configs.service';
 import { VisibilityType } from 'src/configs/configs.schema';
 import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
+import { UserSettingsService } from 'src/users/user-settings/user-settings.service';
+import { UtilsService } from 'src/core/utils/utils.service';
 @ApiBasicAuth()
 @ApiTags('auth')
 @UseGuards(BasicAuthGuard)
@@ -17,9 +19,11 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly configsService: ConfigsService,
+    private readonly userSettingsService: UserSettingsService,
+    private readonly utilsService: UtilsService,
   ) {}
 
-  async registerUser(dto: RegisterAuthDto & { client: string }) {
+  async registerUser(dto: RegisterAuthDto & { client: string; type: string }) {
     const ROLE_CONFIG = await this.configsService.get(
       'ROLE_CONFIG',
       VisibilityType.PRIVATE,
@@ -29,6 +33,11 @@ export class AuthController {
       client: dto.client,
       deviceId: dto.deviceId,
       roleId: ROLE_CONFIG.value.DEFAULT,
+      type: dto.type,
+    });
+
+    await this.userSettingsService.create({
+      userId: user._id.toString(),
     });
 
     await this.authService.create({
@@ -41,7 +50,7 @@ export class AuthController {
 
   @Post('/thirdparty/login')
   async thirdpartyLogin(@Body() dto: LoginAuthDto, @Req() req: Request) {
-    const username = `${req['user']}:${dto.username}`;
+    const username = `${req['user']}:${this.utilsService.encrypt(dto.username)}`;
     let userId: string;
     const alreadyExists = await this.usersService.findOneByFilter({
       username: username,
@@ -53,6 +62,7 @@ export class AuthController {
         password: dto.password,
         deviceId: dto.deviceId,
         client: req['user'] as string,
+        type: 'user',
       });
       userId = user._id.toString();
     } else {
@@ -91,6 +101,7 @@ export class AuthController {
       password: dto.password,
       deviceId: dto.deviceId,
       client: req['user'] as string,
+      type: 'user',
     });
     return {
       ok: true,

@@ -1,20 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
-import { TokensService } from './tokens/tokens.service';
 import { Auth } from './auth.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, ObjectId } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import STRINGS from 'src/common/consts/strings.json';
-import { User } from 'src/users/users.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Auth.name) private readonly authModel: Model<Auth>,
     private readonly usersService: UsersService,
-    private readonly tokensService: TokensService,
     private readonly jwtService: JwtService,
   ) {}
   hash(string: string) {

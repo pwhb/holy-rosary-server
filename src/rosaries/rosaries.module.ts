@@ -10,5 +10,6 @@ import { Rosary, RosarySchema } from './rosaries.schema';
   ],
   controllers: [RosariesController],
   providers: [RosariesService],
+  exports: [RosariesService],
 })
 export class RosariesModule {}

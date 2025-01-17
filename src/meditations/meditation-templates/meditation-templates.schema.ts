@@ -17,13 +17,13 @@ export enum MeditationFrequency {
 
 @Schema({ timestamps: true })
 export class MeditationTemplate extends Base {
-  @Prop({ required: true })
+  @Prop({ required: true, type: Object })
   name: LanguageString;
 
   @Prop({ required: true, unique: true })
   code: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, type: Object })
   description: LanguageString;
 
   @Prop({ type: String })
@@ -35,7 +35,7 @@ export class MeditationTemplate extends Base {
   @Prop({ type: [String] })
   frequencyOptions: MeditationFrequency[];
 
-  @Prop()
+  @Prop({ type: [Number] })
   countOptions: number[];
 
   @Prop({ type: Object })

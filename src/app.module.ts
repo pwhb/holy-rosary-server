@@ -18,8 +18,11 @@ import { RolesModule } from './core/roles/roles.module';
 import { PermissionsModule } from './core/permissions/permissions.module';
 import { MenusModule } from './core/menus/menus.module';
 import { HomeController } from './home/home.controller';
-import { MeditationsService } from './meditations/meditations.service';
-import { MeditationTemplatesModule } from './meditation-templates/meditation-templates.module';
+import { MeditationTemplatesModule } from './meditations/meditation-templates/meditation-templates.module';
+import { MeditationRoutinesModule } from './meditations/meditation-routines/meditation-routines.module';
+import { MeditationRecordsService } from './meditations/meditation-records/meditation-records.service';
+import { MeditationRecordsModule } from './meditations/meditation-records/meditation-records.module';
+import { UtilsService } from './core/utils/utils.service';
 
 @Module({
   imports: [
@@ -59,6 +62,8 @@ import { MeditationTemplatesModule } from './meditation-templates/meditation-tem
     PermissionsModule,
     MenusModule,
     MeditationTemplatesModule,
+    MeditationRoutinesModule,
+    MeditationRecordsModule,
   ],
   controllers: [AppController, HomeController],
   providers: [
@@ -67,7 +72,8 @@ import { MeditationTemplatesModule } from './meditation-templates/meditation-tem
     BotService,
     TemplatesService,
     TokensService,
-    MeditationsService,
+    MeditationRecordsService,
+    UtilsService,
   ],
 })
 export class AppModule {}

@@ -4,10 +4,11 @@ import {
   MeditationFrequency,
 } from '../meditation-templates.schema';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class CreateMeditationTemplateDto {
   @ApiProperty()
+  @IsObject()
   name: LanguageString;
 
   @ApiProperty()
@@ -15,6 +16,7 @@ export class CreateMeditationTemplateDto {
   code: string;
 
   @ApiProperty()
+  @IsObject()
   description: LanguageString;
 
   @ApiProperty()
@@ -34,5 +36,6 @@ export class CreateMeditationTemplateDto {
   countOptions: number[];
 
   @ApiProperty()
+  @IsOptional()
   metadata: any;
 }

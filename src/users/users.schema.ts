@@ -25,12 +25,6 @@ export class User extends Base {
   @Prop({ default: false })
   isEmailVerified?: boolean;
 
-  @Prop({})
-  bio?: string;
-
-  @Prop({})
-  avatar?: string;
-
   @Prop({ required: false })
   deviceId?: string;
 
