@@ -11,6 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
 import { BasicStrategy } from './basic.strategy';
 import { ConfigsModule } from 'src/configs/configs.module';
 import { PermissionsModule } from 'src/core/permissions/permissions.module';
+import { UtilsService } from 'src/core/utils/utils.service';
 
 @Module({
   imports: [
@@ -28,6 +29,6 @@ import { PermissionsModule } from 'src/core/permissions/permissions.module';
     ConfigsModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, TokensService, JwtStrategy, BasicStrategy],
+  providers: [AuthService, TokensService, JwtStrategy, BasicStrategy, UtilsService],
 })
 export class AuthModule {}
