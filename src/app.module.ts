@@ -23,6 +23,8 @@ import { MeditationRoutinesModule } from './meditations/meditation-routines/medi
 import { MeditationRecordsService } from './meditations/meditation-records/meditation-records.service';
 import { MeditationRecordsModule } from './meditations/meditation-records/meditation-records.module';
 import { UtilsService } from './core/utils/utils.service';
+import { EventsGateway } from './events/events/events.gateway';
+import { EventsController } from './events/events/events.controller';
 
 @Module({
   imports: [
@@ -65,7 +67,7 @@ import { UtilsService } from './core/utils/utils.service';
     MeditationRoutinesModule,
     MeditationRecordsModule,
   ],
-  controllers: [AppController, HomeController],
+  controllers: [AppController, HomeController, EventsController],
   providers: [
     AppService,
     CacheService,
@@ -74,6 +76,7 @@ import { UtilsService } from './core/utils/utils.service';
     TokensService,
     MeditationRecordsService,
     UtilsService,
+    EventsGateway,
   ],
 })
 export class AppModule {}
